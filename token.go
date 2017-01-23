@@ -162,11 +162,11 @@ func (this *Token) isOperator() bool {
 	return this.Kind == KOperator
 }
 
-func (this *Token) isOperatorType(t TokenType) bool {
+func (this *Token) isOperatorT(t TokenType) bool {
 	return this.isOperator() && this.Type == t
 }
 
-func (this *Token) isOperatorValue(v string) bool {
+func (this *Token) isOperatorV(v string) bool {
 	return this.isOperator() && this.Value == v
 }
 
@@ -174,11 +174,11 @@ func (this *Token) isKeyword() bool {
 	return this.Kind == KKeyword
 }
 
-func (this *Token) isKeywordType(t TokenType) bool {
+func (this *Token) isKeywordT(t TokenType) bool {
 	return this.isKeyword() && this.Type == t
 }
 
-func (this *Token) isKeywordValue(v string) bool {
+func (this *Token) isKeywordV(v string) bool {
 	return this.isKeyword() && this.Value == v
 }
 
