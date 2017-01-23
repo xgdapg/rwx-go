@@ -1,12 +1,12 @@
 package main
 
 type ASTNodeBlock struct {
-	nodes []ASTNode
+	Nodes []ASTNode
 }
 
 func (ast *AST) parseBlock() (*ASTNodeBlock, error) {
 	n := &ASTNodeBlock{
-		nodes: []ASTNode{},
+		Nodes: []ASTNode{},
 	}
 
 	if ast.tk(0).isOperatorV("{") {
@@ -25,7 +25,7 @@ func (ast *AST) parseBlock() (*ASTNodeBlock, error) {
 		}
 		if t.isKeywordV("var") {
 			if nn, err := ast.parseDeclVar(); err == nil {
-				n.nodes = append(n.nodes, nn)
+				n.Nodes = append(n.Nodes, nn)
 			} else {
 				return nil, err
 			}

@@ -1,9 +1,9 @@
 package main
 
 type ASTNodeDeclVar struct {
-	token   *Token
-	varName *ASTNodeIdentifier
-	varType *ASTNodeType
+	Token *Token
+	Name  *ASTNodeIdentifier
+	Type  *ASTNodeType
 }
 
 func (ast *AST) parseDeclVar(inLoop bool) (*ASTNodeDeclVar, error) {
@@ -11,18 +11,18 @@ func (ast *AST) parseDeclVar(inLoop bool) (*ASTNodeDeclVar, error) {
 
 	ast.index += 1
 
-	if n.varName, err = ast.parseIdentifier(); err != nil {
+	if n.Name, err = ast.parseIdentifier(); err != nil {
 		return nil, err
 	}
 
 	t := ast.tk(0)
 	if !t.isOperatorV(":") && !(!inLoop && t.isOperatorV("=")) && !(inLoop && t.isKeywordV("in")) {
-		newASTError("cannot determine the type of variable `" + n.varName.token.Value + "`")
+		newASTError("cannot determine the type of variable `" + n.Name.Token.Value + "`")
 	}
 
 	if t.isOperatorV(":") {
 		ast.index += 1
-		if n.varType, err = ast.parseType(); err != nil {
+		if n.Type, err = ast.parseType(); err != nil {
 			return nil, err
 		}
 	}

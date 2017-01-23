@@ -8,7 +8,6 @@ import (
 type AST struct {
 	lex   *Lexer
 	index int
-	nodes []ASTNode
 }
 
 type ASTNode interface {
@@ -24,7 +23,6 @@ func NewAST(l *Lexer) *AST {
 	return &AST{
 		lex:   l,
 		index: 0,
-		nodes: []ASTNode{},
 	}
 }
 
@@ -36,10 +34,8 @@ func (ast *AST) tk(offset int) *Token {
 	return EmptyToken
 }
 
-func (ast *AST) parse() {
-	//auto root = NODE_P(BlockNode);
-	//checkNode(root);
-	//return root;
+func (ast *AST) parse() (ASTNode, error) {
+	return ast.parseBlock()
 }
 
 func newASTError(text string) error {
