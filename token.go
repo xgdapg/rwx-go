@@ -41,7 +41,7 @@ const (
 	TIf
 	TElse
 
-	TLoop
+	TWhile
 	TBreak
 	TContinue
 

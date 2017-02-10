@@ -6,7 +6,7 @@ type ASTNodeDeclVar struct {
 	Type  *ASTNodeType
 }
 
-func (ast *AST) parseDeclVar(inLoop bool) (*ASTNodeDeclVar, error) {
+func (ast *AST) parseDeclVar() (*ASTNodeDeclVar, error) {
 	n := &ASTNodeDeclVar{}
 
 	ast.index += 1
@@ -16,8 +16,8 @@ func (ast *AST) parseDeclVar(inLoop bool) (*ASTNodeDeclVar, error) {
 	}
 
 	t := ast.tk(0)
-	if !t.isOperatorV(":") && !(!inLoop && t.isOperatorV("=")) && !(inLoop && t.isKeywordV("in")) {
-		newASTError("cannot determine the type of variable `" + n.Name.Token.Value + "`")
+	if !t.isOperatorV(":") && !t.isOperatorV("=") {
+		return nil, newASTError("cannot determine the type of variable `" + n.Name.Token.Value + "`")
 	}
 
 	if t.isOperatorV(":") {

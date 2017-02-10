@@ -29,6 +29,31 @@ func (ast *AST) parseBlock() (*ASTNodeBlock, error) {
 			} else {
 				return nil, err
 			}
+			continue
+		}
+		if t.isKeywordV("const") {
+			if nn, err := ast.parseDeclConst(); err == nil {
+				n.Nodes = append(n.Nodes, nn)
+			} else {
+				return nil, err
+			}
+			continue
+		}
+		if t.isKeywordV("if") {
+			if nn, err := ast.parseIf(); err == nil {
+				n.Nodes = append(n.Nodes, nn)
+			} else {
+				return nil, err
+			}
+			continue
+		}
+		if t.isKeywordV("while") {
+			if nn, err := ast.parseWhile(); err == nil {
+				n.Nodes = append(n.Nodes, nn)
+			} else {
+				return nil, err
+			}
+			continue
 		}
 		return nil, newASTError("unmatched statement, got `" + t.Value + "`")
 	}

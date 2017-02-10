@@ -147,8 +147,8 @@ func (this *Lexer) addToken(v string, k TokenKind, t TokenType) {
 			token.Type = TIf
 		case "else":
 			token.Type = TElse
-		case "loop":
-			token.Type = TLoop
+		case "while":
+			token.Type = TWhile
 		case "break":
 			token.Type = TBreak
 		case "continue":
