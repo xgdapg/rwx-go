@@ -4,10 +4,25 @@ type ASTNodeBlock struct {
 	Nodes []ASTNode
 }
 
-func (ast *AST) parseBlock() (*ASTNodeBlock, error) {
+func (ast *AST) newBlock() *ASTNodeBlock {
 	n := &ASTNodeBlock{
 		Nodes: []ASTNode{},
 	}
+	ast.blockStack = append(ast.blockStack, n)
+	return n
+}
+
+func (ast *AST) popBlock() {
+	ast.blockStack = ast.blockStack[0 : len(ast.blockStack)-1]
+}
+
+func (ast *AST) currBlock() *ASTNodeBlock {
+	return ast.blockStack[len(ast.blockStack-1)]
+}
+
+func (ast *AST) parseBlock() (*ASTNodeBlock, error) {
+	n := ast.newBlock()
+	defer ast.popBlock()
 
 	if ast.tk(0).isOperatorV("{") {
 		ast.index += 1
@@ -54,6 +69,9 @@ func (ast *AST) parseBlock() (*ASTNodeBlock, error) {
 				return nil, err
 			}
 			continue
+		}
+		if t.isAssignOperator() {
+
 		}
 		return nil, newASTError("unmatched statement, got `" + t.Value + "`")
 	}

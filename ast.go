@@ -6,8 +6,9 @@ import (
 )
 
 type AST struct {
-	lex   *Lexer
-	index int
+	lex        *Lexer
+	index      int
+	blockStack []*ASTNodeBlock
 }
 
 type ASTNode interface {
@@ -21,8 +22,9 @@ type ASTNode interface {
 
 func NewAST(l *Lexer) *AST {
 	return &AST{
-		lex:   l,
-		index: 0,
+		lex:        l,
+		index:      0,
+		blockStack: []*ASTNodeBlock{},
 	}
 }
 

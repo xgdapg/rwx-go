@@ -26,9 +26,8 @@ func (ast *AST) parseIf() (*ASTNodeIf, error) {
 	if ast.tk(0).isKeywordV("else") {
 		ast.index += 1 //else
 		if ast.tk(0).isKeywordV("if") {
-			n.elseBlock = &ASTNodeBlock{
-				Nodes: []ASTNode{},
-			}
+			n.elseBlock = ast.newBlock()
+			defer ast.popBlock()
 			bn, err := ast.parseIf()
 			if err != nil {
 				return nil, err

@@ -185,3 +185,14 @@ func (this *Token) isKeywordV(v string) bool {
 func (this *Token) isComment() bool {
 	return this.Kind == KComment
 }
+
+func (this *Token) isAssignOperator() bool {
+	if !this.isOperator() {
+		return false
+	}
+	switch this.Value {
+	case "=", "+=", "-=", "*=", "/=", "%=":
+		return true
+	}
+	return false
+}
