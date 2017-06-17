@@ -1,12 +1,14 @@
 package main
 
 type ASTNodeBlock struct {
-	Nodes []ASTNode
+	outerBlock *ASTNodeBlock
+	Nodes      []ASTNode
 }
 
 func (ast *AST) newBlock() *ASTNodeBlock {
 	n := &ASTNodeBlock{
-		Nodes: []ASTNode{},
+		outerBlock: ast.currBlock(),
+		Nodes:      []ASTNode{},
 	}
 	ast.blockStack = append(ast.blockStack, n)
 	return n
@@ -17,7 +19,11 @@ func (ast *AST) popBlock() {
 }
 
 func (ast *AST) currBlock() *ASTNodeBlock {
-	return ast.blockStack[len(ast.blockStack-1)]
+	l := len(ast.blockStack)
+	if l == 0 {
+		return nil
+	}
+	return ast.blockStack[l-1]
 }
 
 func (ast *AST) parseBlock() (*ASTNodeBlock, error) {
@@ -71,7 +77,9 @@ func (ast *AST) parseBlock() (*ASTNodeBlock, error) {
 			continue
 		}
 		if t.isAssignOperator() {
+			if nn, err := ast.parseExpr(); err == nil {
 
+			}
 		}
 		return nil, newASTError("unmatched statement, got `" + t.Value + "`")
 	}

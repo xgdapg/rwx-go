@@ -16,8 +16,12 @@ type ASTNode interface {
 	typeName() string
 
 	parse() *ASTNode
-	eval() *ASTNode
 	print()
+}
+
+type ASTNodeExpr interface {
+	ASTNode
+	eval() *ASTNode
 }
 
 func NewAST(l *Lexer) *AST {

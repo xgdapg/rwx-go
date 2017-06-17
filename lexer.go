@@ -166,7 +166,7 @@ func (this *Lexer) addToken(v string, k TokenKind, t TokenType) {
 		case "-":
 			token.Type = TMinus
 		case "*":
-			token.Type = TMulit
+			token.Type = TMulti
 		case "/":
 			token.Type = TDivide
 		case "%":

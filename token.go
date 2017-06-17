@@ -48,7 +48,7 @@ const (
 	//Operator
 	TPlus       // +
 	TMinus      // -
-	TMulit      // *
+	TMulti      // *
 	TDivide     // /
 	TModulus    // %
 	TUnaryMinus // -
@@ -132,67 +132,143 @@ func NewToken(k TokenKind, t TokenType, v string, r, c int) *Token {
 
 var EmptyToken *Token = NewToken(KUnknown, TUnknown, "#", 0, 0)
 
-func (this *Token) Next(offset int) *Token {
-	if this.Lex != nil {
-		i := this.Index + offset
-		if i >= 0 && i < len(this.Lex.Tokens) {
-			return this.Lex.Tokens[i]
+func (t *Token) Next(offset int) *Token {
+	if t.Lex != nil {
+		i := t.Index + offset
+		if i >= 0 && i < len(t.Lex.Tokens) {
+			return t.Lex.Tokens[i]
 		}
 	}
 	return EmptyToken
 }
 
-func (this *Token) IsSameTo(t *Token) bool {
-	return this.Kind == t.Kind && this.Type == t.Type && this.Value == t.Value
+func (t *Token) isSameTo(tk *Token) bool {
+	return t.Kind == tk.Kind && t.Type == tk.Type && t.Value == tk.Value
 }
 
-func (this *Token) isIdentifier() bool {
-	return this.Kind == KIdentifier
+func (t *Token) isIdentifier() bool {
+	return t.Kind == KIdentifier
 }
 
-func (this *Token) isLiteral() bool {
-	return this.Kind == KLiteral
+func (t *Token) isLiteral() bool {
+	return t.Kind == KLiteral
 }
 
-func (this *Token) isLiteralType(t TokenType) bool {
-	return this.isLiteral() && this.Type == t
+func (t *Token) isLiteralType(tt TokenType) bool {
+	return t.isLiteral() && t.Type == tt
 }
 
-func (this *Token) isOperator() bool {
-	return this.Kind == KOperator
+func (t *Token) isOperator() bool {
+	return t.Kind == KOperator
 }
 
-func (this *Token) isOperatorT(t TokenType) bool {
-	return this.isOperator() && this.Type == t
+func (t *Token) isOperatorT(tt TokenType) bool {
+	return t.isOperator() && t.Type == tt
 }
 
-func (this *Token) isOperatorV(v string) bool {
-	return this.isOperator() && this.Value == v
+func (t *Token) isOperatorV(v string) bool {
+	return t.isOperator() && t.Value == v
 }
 
-func (this *Token) isKeyword() bool {
-	return this.Kind == KKeyword
+func (t *Token) isKeyword() bool {
+	return t.Kind == KKeyword
 }
 
-func (this *Token) isKeywordT(t TokenType) bool {
-	return this.isKeyword() && this.Type == t
+func (t *Token) isKeywordT(tt TokenType) bool {
+	return t.isKeyword() && t.Type == tt
 }
 
-func (this *Token) isKeywordV(v string) bool {
-	return this.isKeyword() && this.Value == v
+func (t *Token) isKeywordV(v string) bool {
+	return t.isKeyword() && t.Value == v
 }
 
-func (this *Token) isComment() bool {
-	return this.Kind == KComment
+func (t *Token) isComment() bool {
+	return t.Kind == KComment
 }
 
-func (this *Token) isAssignOperator() bool {
-	if !this.isOperator() {
+func (t *Token) isAssignOperator() bool {
+	if !t.isOperator() {
 		return false
 	}
-	switch this.Value {
+	switch t.Value {
 	case "=", "+=", "-=", "*=", "/=", "%=":
 		return true
 	}
 	return false
+}
+
+func (t *Token) isBinaryOperator() bool {
+	if !t.isOperator() {
+		return false
+	}
+	// if t.isAssignOperator() {
+	// 	return true
+	// }
+	switch t.Value {
+	case "+", "-", "*", "/", "%", "==", "!=", "<", "<=", ">", ">=", "&&", "||", "&", "|", "^", "<<", ">>", ".":
+		return true
+	}
+	return false
+}
+
+func (t *Token) isUnaryOperator() bool {
+	if !t.isOperator() {
+		return false
+	}
+	switch t.Value {
+	case "!", "~", "-", "&":
+		return true
+	}
+	return false
+}
+
+func (t *Token) getPriority(unary bool) (priority int) {
+	if unary && t.isUnaryOperator() {
+		goto UNARY
+	}
+	priority = 1
+	// if t.isAssignOperator() {
+	// 	return
+	// }
+	priority = 2
+	if t.Value == "|" {
+		return
+	}
+	priority = 3
+	if t.Value == "&" {
+		return
+	}
+	priority = 4
+	if t.Value == "==" ||
+		t.Value == "!=" ||
+		t.Value == "<" ||
+		t.Value == "<=" ||
+		t.Value == ">" ||
+		t.Value == ">=" {
+		return
+	}
+	priority = 5
+	if t.Value == "+" ||
+		t.Value == "-" {
+		return
+	}
+	priority = 6
+	if t.Value == "*" ||
+		t.Value == "/" ||
+		t.Value == "%" {
+		return
+	}
+UNARY:
+	priority = 7
+	if t.isUnaryOperator() {
+		return
+	}
+	priority = 8
+	if t.Value == "." ||
+		t.Value == "fn" ||
+		t.Value == "[]" {
+		return
+	}
+
+	return 0
 }

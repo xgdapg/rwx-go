@@ -1,7 +1,7 @@
 package main
 
 type ASTNodeIf struct {
-	condExpr  *ASTNodeExpr
+	condExpr  ASTNodeExpr
 	ifBlock   *ASTNodeBlock
 	elseBlock *ASTNodeBlock
 }
